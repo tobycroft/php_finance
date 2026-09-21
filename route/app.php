@@ -2,16 +2,20 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+use app\middleware\CheckToken;
 use think\facade\Route;
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP8!';
-});
+// 根路径进入主面板（未登录由中间件跳转登录页）
+Route::get('/', 'Panel/index')->middleware(CheckToken::class);
 
-Route::get('hello/:name', 'index/hello');
+// 登录 / 登出
+Route::get('login', 'Login/index');
+Route::post('login', 'Login/doLogin');
+Route::post('logout', 'Login/doLogout');
+
+// 登录后主面板（需登录态）
+Route::group('panel', function () {
+    Route::get('/', 'Panel/index');
+})->middleware(CheckToken::class);
