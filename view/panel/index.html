@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$page_title} - 个人财务管理系统</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+{include file="common/topbar" /}
+<div class="layout-body">
+    {include file="common/sidebar" /}
+    <main class="content">
+        <div class="page-header">
+            <h1>欢迎回来，{$user.username}</h1>
+            <p class="page-sub">这里是你的财务数据总览</p>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">账户总余额</div>
+                <div class="stat-value">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">本月收入</div>
+                <div class="stat-value stat-income">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">本月支出</div>
+                <div class="stat-value stat-expense">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">本月结余</div>
+                <div class="stat-value">--</div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <h2 class="panel-card-title">快捷操作</h2>
+            <p class="panel-card-empty">收支记录、预算管理等功能开发中，敬请期待。</p>
+        </div>
+    </main>
+</div>
+<script src="/static/js/panel.js"></script>
+</body>
+</html>
