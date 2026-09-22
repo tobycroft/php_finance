@@ -58,9 +58,17 @@ class CaptchaService
 
     /**
      * 校验验证码（ident 与生成时一致，有效期 CODE_TTL 秒）
+     *
+     * 先做本地格式校验，避免任意内容透传到 AOSS 远端接口
      */
     public static function checkCode(string $ident, string $code): CaptchaRet
     {
+        // ident 由服务端生成（gif_ + 32 位 hex），code 为数字验证码
+        if (!preg_match('/^gif_[0-9a-f]{32}$/', $ident)
+            || !preg_match('/^[0-9A-Za-z]{1,10}$/', $code)) {
+            return new CaptchaRet(json_encode(['code' => 1, 'echo' => 'invalid captcha format']));
+        }
+
         return self::sdk()->check_in_time($ident, $code, self::CODE_TTL);
     }
 }

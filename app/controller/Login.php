@@ -41,10 +41,19 @@ class Login extends BaseController
             return json(['code' => 2, 'msg' => '验证码错误或已过期', 'data' => null]);
         }
 
+        // 登录失败限流：同一用户名+IP 10 分钟内最多 5 次
+        $ip = (string) $this->request->ip();
+        if (AuthService::isLoginBlocked($username, $ip)) {
+            return json(['code' => 1, 'msg' => '登录失败次数过多，请 10 分钟后再试', 'data' => null]);
+        }
+
         $tokenRow = AuthService::attemptLogin($username, $password, $this->request);
         if (!$tokenRow) {
+            AuthService::recordLoginFail($username, $ip);
             return json(['code' => 1, 'msg' => '用户名或密码错误', 'data' => null]);
         }
+
+        AuthService::clearLoginFail($username, $ip);
 
         return json([
             'code' => 0,

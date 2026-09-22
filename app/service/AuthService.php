@@ -5,6 +5,7 @@ namespace app\service;
 
 use app\model\User;
 use app\model\UserToken;
+use think\facade\Cache;
 use think\Request;
 
 /**
@@ -21,6 +22,10 @@ class AuthService
     // Web 端 Token 类型
     public const TOKEN_TYPE_WEB = 'web';
 
+    // 登录失败限流：窗口期内同一用户名+IP 最大失败次数
+    public const LOGIN_FAIL_LIMIT = 5;
+    public const LOGIN_FAIL_WINDOW = 600;
+
     /**
      * @var array 当前请求周期内的 token => User 运行时缓存
      */
@@ -36,6 +41,11 @@ class AuthService
             $token = trim((string) $request->cookie(self::TOKEN_FIELD, ''));
         }
 
+        // Token 固定为 64 位 hex，格式不符直接拒绝，避免无效值打到数据库
+        if (!preg_match('/^[0-9a-f]{64}$/', $token)) {
+            return '';
+        }
+
         return $token;
     }
 
@@ -45,6 +55,11 @@ class AuthService
     public static function attemptLogin(string $username, string $password, Request $request): ?UserToken
     {
         if ($username === '' || $password === '') {
+            return null;
+        }
+
+        // 用户名最长 100（字段为 varchar(100)），超长直接判定失败
+        if (mb_strlen($username) > 100) {
             return null;
         }
 
@@ -114,5 +129,37 @@ class AuthService
             UserToken::where('token', $token)->delete();
             unset(self::$userCache[$token]);
         }
+    }
+
+    /* ------------------------------ 登录失败限流 ------------------------------ */
+
+    public static function loginFailKey(string $username, string $ip): string
+    {
+        return 'login_fail:' . md5($username . '|' . $ip);
+    }
+
+    /**
+     * 是否已达到登录失败次数上限
+     */
+    public static function isLoginBlocked(string $username, string $ip): bool
+    {
+        return (int) Cache::get(self::loginFailKey($username, $ip), 0) >= self::LOGIN_FAIL_LIMIT;
+    }
+
+    /**
+     * 记录一次登录失败
+     */
+    public static function recordLoginFail(string $username, string $ip): void
+    {
+        $key = self::loginFailKey($username, $ip);
+        Cache::set($key, (int) Cache::get($key, 0) + 1, self::LOGIN_FAIL_WINDOW);
+    }
+
+    /**
+     * 登录成功后清除失败计数
+     */
+    public static function clearLoginFail(string $username, string $ip): void
+    {
+        Cache::delete(self::loginFailKey($username, $ip));
     }
 }
