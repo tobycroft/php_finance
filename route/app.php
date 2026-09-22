@@ -15,6 +15,10 @@ Route::get('login', 'Login/index');
 Route::post('login', 'Login/doLogin');
 Route::post('logout', 'Login/doLogout');
 
+// 登录滑动验证码
+Route::post('captcha/slide/create', 'Captcha/slideCreate');
+Route::post('captcha/slide/check', 'Captcha/slideCheck');
+
 // 登录后主面板（需登录态）
 Route::group('panel', function () {
     Route::get('/', 'Panel/index');

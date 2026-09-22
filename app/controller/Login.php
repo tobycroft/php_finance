@@ -5,6 +5,7 @@ namespace app\controller;
 
 use app\BaseController;
 use app\service\AuthService;
+use app\service\CaptchaService;
 
 /**
  * 登录 / 登出
@@ -31,6 +32,12 @@ class Login extends BaseController
     {
         $username = trim((string) $this->request->post('username', ''));
         $password = (string) $this->request->post('password', '');
+
+        // 滑动验证码一次性凭据校验（code=2 提示前端刷新验证码）
+        $captchaPass = (string) $this->request->post('captcha_pass', '');
+        if (!CaptchaService::consumePass($captchaPass)) {
+            return json(['code' => 2, 'msg' => '请先完成滑块验证', 'data' => null]);
+        }
 
         $tokenRow = AuthService::attemptLogin($username, $password, $this->request);
         if (!$tokenRow) {
