@@ -23,17 +23,10 @@
             <input type="password" id="password" name="password" autocomplete="current-password" placeholder="请输入密码" required>
         </div>
         <div class="form-item">
-            <label>安全验证</label>
-            <div class="slide-captcha">
-                <div class="slide-captcha-inner" id="slide-inner">
-                    <img class="slide-bg" id="slide-bg" src="" alt="滑动验证码">
-                    <img class="slide-block" id="slide-block" src="" alt="" style="display:none;">
-                </div>
-                <div class="slide-bar" id="slide-bar">
-                    <div class="slide-handle" id="slide-handle">&#187;</div>
-                    <span class="slide-bar-text" id="slide-bar-text">按住滑块，拖动完成拼图</span>
-                </div>
-                <div class="slide-status" id="slide-status"></div>
+            <label for="captcha_code">验证码</label>
+            <div class="captcha-row">
+                <input type="text" id="captcha_code" name="captcha_code" maxlength="10" autocomplete="off" placeholder="请输入验证码">
+                <img class="captcha-img" id="captcha-img" title="看不清？点击刷新" alt="验证码">
             </div>
         </div>
         <div class="form-error" id="login-error"></div>

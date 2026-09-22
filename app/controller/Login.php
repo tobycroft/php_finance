@@ -33,10 +33,12 @@ class Login extends BaseController
         $username = trim((string) $this->request->post('username', ''));
         $password = (string) $this->request->post('password', '');
 
-        // 滑动验证码一次性凭据校验（code=2 提示前端刷新验证码）
-        $captchaPass = (string) $this->request->post('captcha_pass', '');
-        if (!CaptchaService::consumePass($captchaPass)) {
-            return json(['code' => 2, 'msg' => '请先完成滑块验证', 'data' => null]);
+        // GIF 验证码校验（code=2 提示前端刷新验证码）
+        $captchaIdent = trim((string) $this->request->post('captcha_ident', ''));
+        $captchaCode = trim((string) $this->request->post('captcha_code', ''));
+        $captchaRet = CaptchaService::checkCode($captchaIdent, $captchaCode);
+        if (!$captchaRet->isSuccess()) {
+            return json(['code' => 2, 'msg' => '验证码错误或已过期', 'data' => null]);
         }
 
         $tokenRow = AuthService::attemptLogin($username, $password, $this->request);

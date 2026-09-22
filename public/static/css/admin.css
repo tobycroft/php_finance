@@ -216,101 +216,27 @@ button {
     text-align: center;
 }
 
-/* 滑动拼图验证码 */
-.slide-captcha {
-    user-select: none;
-    -webkit-user-select: none;
+/* GIF 验证码 */
+.captcha-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
 }
 
-.slide-captcha-inner {
-    position: relative;
-    width: 300px;
-    height: 150px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #e6eaf2;
+.captcha-row input {
+    flex: 1;
+    min-width: 0;
 }
 
-.slide-bg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.slide-block {
-    position: absolute;
-    cursor: grab;
-    z-index: 2;
-}
-
-.slide-block:active {
-    cursor: grabbing;
-}
-
-.slide-bar {
-    position: relative;
-    width: 300px;
-    height: 38px;
-    margin: 10px auto 0;
-    background: #e6eaf2;
+.captcha-img {
+    width: 110px;
+    height: 40px;
+    border-radius: 6px;
     border: 1px solid var(--color-border);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.slide-handle {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 40px;
-    height: 100%;
-    background: var(--color-primary);
-    color: #fff;
-    text-align: center;
-    line-height: 37px;
-    font-size: 16px;
-    cursor: grab;
-    z-index: 2;
-    transition: background-color .2s ease;
-}
-
-.slide-handle:active {
-    cursor: grabbing;
-    background: var(--color-primary-dark);
-}
-
-.slide-handle.success {
-    background: var(--color-income);
-}
-
-.slide-handle.error {
-    background: var(--color-expense);
-}
-
-.slide-bar-text {
-    position: absolute;
-    inset: 0;
-    text-align: center;
-    line-height: 37px;
-    color: var(--color-text-sub);
-    font-size: 12px;
-    z-index: 1;
-}
-
-.slide-status {
-    min-height: 18px;
-    margin-top: 6px;
-    text-align: center;
-    font-size: 12px;
-}
-
-.slide-status.success {
-    color: var(--color-income);
-}
-
-.slide-status.error {
-    color: var(--color-danger);
+    background: #fff;
+    cursor: pointer;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 /* =============================== 面板布局 =============================== */
