@@ -15,9 +15,14 @@
     }
 
     /* ------------------------------ GIF 验证码 ------------------------------ */
+    var captchaLoading = false;
+
     function refreshCaptcha() {
+        if (captchaLoading) {
+            return;
+        }
+        captchaLoading = true;
         captchaIdent = '';
-        captchaImg.src = '';
 
         fetch('/captcha/gif')
             .then(function (res) {
@@ -27,23 +32,22 @@
                 var ident = res.headers.get('X-Captcha-Ident') || '';
                 return res.blob().then(function (blob) {
                     captchaIdent = ident;
-                    if (captchaImg.src) {
-                        URL.revokeObjectURL(captchaImg.src);
+                    if (captchaImg.dataset.objectUrl) {
+                        URL.revokeObjectURL(captchaImg.dataset.objectUrl);
                     }
-                    captchaImg.src = URL.createObjectURL(blob);
+                    captchaImg.dataset.objectUrl = URL.createObjectURL(blob);
+                    captchaImg.src = captchaImg.dataset.objectUrl;
                 });
             })
             .catch(function () {
                 showError('验证码加载失败，请点击图片重试');
+            })
+            .finally(function () {
+                captchaLoading = false;
             });
     }
 
     captchaImg.addEventListener('click', refreshCaptcha);
-    captchaImg.addEventListener('error', function () {
-        if (!captchaIdent) {
-            setTimeout(refreshCaptcha, 1500);
-        }
-    });
 
     /* ------------------------------ 登录 ------------------------------ */
     function saveToken(token) {
