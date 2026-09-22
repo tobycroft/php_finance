@@ -21,4 +21,8 @@ Route::get('captcha/gif', 'Captcha/gif');
 // 登录后主面板（需登录态）
 Route::group('panel', function () {
     Route::get('/', 'Panel/index');
+    Route::get('records', 'Panel/records');
+    Route::get('budget', 'Panel/budget');
+    Route::get('report', 'Panel/report');
+    Route::get('settings', 'Panel/settings');
 })->middleware(CheckToken::class);

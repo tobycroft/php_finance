@@ -25,4 +25,48 @@ class Panel extends BaseController
             'page_title' => '仪表盘',
         ]);
     }
+
+    /**
+     * 收支记录（占位）
+     */
+    public function records()
+    {
+        return $this->placeholder('收支记录', 'records');
+    }
+
+    /**
+     * 预算管理（占位）
+     */
+    public function budget()
+    {
+        return $this->placeholder('预算管理', 'budget');
+    }
+
+    /**
+     * 报表统计（占位）
+     */
+    public function report()
+    {
+        return $this->placeholder('报表统计', 'report');
+    }
+
+    /**
+     * 系统设置（占位）
+     */
+    public function settings()
+    {
+        return $this->placeholder('系统设置', 'settings');
+    }
+
+    /**
+     * 渲染未开发模块的占位页（共用同一模板）
+     */
+    protected function placeholder(string $pageTitle, string $active)
+    {
+        return view('panel/placeholder', [
+            'user'       => AuthService::userByToken($this->request),
+            'active'     => $active,
+            'page_title' => $pageTitle,
+        ]);
+    }
 }
